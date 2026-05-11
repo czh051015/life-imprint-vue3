@@ -5,6 +5,8 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  // 关键：这里必须和你的仓库名一致
+  base: '/life-imprint-vue3/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
