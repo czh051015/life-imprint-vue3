@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片资源访问测试</title>
+</head>
+<body>
+    <h1>图片资源访问测试</h1>
+    
+    <h2>public/img/stories/目录下的图片</h2>
+    
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <div style="text-align: center;">
+            <img src="/img/stories/家族成立.jpg" alt="家族成立" style="width: 200px; height: auto;" />
+            <p>家族成立</p>
+            <p>URL: http://localhost:5174/img/stories/家族成立.jpg</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <img src="/img/stories/重要婚礼.jpg" alt="重要婚礼" style="width: 200px; height: auto;" />
+            <p>重要婚礼</p>
+            <p>URL: http://localhost:5174/img/stories/重要婚礼.jpg</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <img src="/img/stories/长子出生.jpg" alt="长子出生" style="width: 200px; height: auto;" />
+            <p>长子出生</p>
+            <p>URL: http://localhost:5174/img/stories/长子出生.jpg</p>
+        </div>
+    </div>
+    
+    <h2>访问说明</h2>
+    <ul>
+        <li>如果图片显示正常，说明资源路径配置正确</li>
+        <li>如果图片无法显示，请检查图片文件是否存在于public/img/stories/目录下</li>
+        <li>请在浏览器中直接访问图片URL，验证资源是否可访问</li>
+    </ul>
+</body>
+</html>

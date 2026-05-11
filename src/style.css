@@ -1,0 +1,170 @@
+/* 基础样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 统一色彩体系 */
+:root {
+    /* 主色调 - 传统中国红色 */
+    --primary-color: #164962;
+    /* 辅助色 - 蓝色系 */
+    --secondary-color: #2a6b8c;
+    /* 高亮色 - 蓝色系 */
+    --highlight-color: #1a536b;
+    /* 背景色 - 宣纸色 */
+    --background-color: #f8f3e9;
+    /* 文字色 - 蓝色系 */
+    --text-color: #164962;
+    /* 边框色 - 蓝色系 */
+    --border-color: #2a6b8c;
+    /* 男性色 - 蓝色系 */
+    --male-color: #e3f2fd;
+    /* 女性色 - 粉色系 */
+    --female-color: #f0d9d9;
+    /* 选中节点边框色 */
+    --selected-border-color: #164962;
+    /* 高亮节点背景色 */
+    --highlighted-background-color: #f0f8ff;
+    /* 配偶连接线颜色 */
+    --spouse-line-color: #164962;
+    /* 父母子女连接线颜色 */
+    --parent-child-line-color: #2a6b8c;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: 'Noto Serif SC', serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
+}
+
+/* 确保app占满整个视口 */
+#app {
+  width: 100%;
+  height: 100vh;
+}
+
+/* 家族列表样式 */
+.families-list {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+}
+
+/* 家族卡片样式 */
+.family-card {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1 1 calc(33.333% - 14px);
+  min-width: 200px;
+  max-width: calc(33.333% - 14px);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.family-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-color);
+}
+
+.family-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.family-members {
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #666;
+}
+
+.enter-family-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.enter-family-btn:hover {
+  background-color: var(--highlight-color);
+}
+
+/* 操作区域样式 */
+.actions-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.actions-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+}
+
+.action-module {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-module label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: var(--text-color);
+  font-size: 18px;
+}
+
+.action-module input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.action-module button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.btn-join {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn-join:hover {
+  background-color: var(--highlight-color);
+  transform: translateY(-2px);
+}
+
+.btn-create {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-create:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}

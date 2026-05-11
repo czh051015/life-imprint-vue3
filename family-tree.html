@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态家族树可视化</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        
+        /* 页面标题 */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        /* 按钮容器 */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* 按钮样式 */
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+        
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover:not(:disabled) {
+            background-color: #da190b;
+        }
+        
+        /* 家族树容器 */
+        .family-tree-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* 家族树内容 */
+        .family-tree-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 60px; /* 代际之间的间距 */
+            position: relative;
+        }
+        
+        /* 代际分隔线 */
+        .generation-divider {
+            width: 80%;
+            height: 2px;
+            background-color: black;
+            margin: 0 auto;
+            position: absolute;
+            left: 10%;
+            z-index: 1;
+        }
+        
+        /* 行容器 - 每一代节点对应一个行容器 */
+        .generation-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* 代际标签 */
+        .generation-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        /* 父容器：包含父代家庭单元和子代区域，垂直排列 */
+        .parent-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px; /* 父容器之间的间距 */
+            position: relative;
+            /* 垂直投影区域：确保子代单元在此区域内分布 */
+            min-width: 90px; /* 2个节点宽度 + 间距 */
+        }
+        
+        /* 家庭单元 - 核心布局：将配偶节点与核心节点绑定为不可拆分的整体 */
+        .family-unit {
+            display: flex;
+            gap: 5px; /* 配偶间距 */
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        /* 子区域：该父代的所有子女，水平排列 */
+        .child-area {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 20px; /* 子女单元之间的间距 */
+            margin-top: 30px; /* 父代与子代之间的垂直间距 */
+            position: relative;
+            width: 100%;
+        }
+        
+        /* 父代与子代之间的垂直连接线 */
+        .parent-container::after {
+            content: '';
+            position: absolute;
+            top: 120px; /* 父代节点高度 */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 30px; /* 父代与子代之间的垂直间距 */
+            background-color: black;
+        }
+        
+        /* 没有子节点的父容器不显示连接线 */
+        .parent-container:has(.child-area:empty)::after {
+            display: none;
+        }
+        
+        /* 空的child-area不显示 */
+        .parent-container .child-area:empty {
+            display: none;
+        }
+        
+        /* 节点样式 - 竖长方形 */
+        .family-node {
+            width: 40px; /* 宽度40px，原80px的一半 */
+            height: 120px; /* 高度120px */
+            background-color: white;
+            border: 1px solid black; /* 黑色边框 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-align: center;
+        }
+        
+        /* 节点选中样式 - 蓝色边框 */
+        .family-node.selected {
+            border-color: blue;
+            box-shadow: 0 0 0 2px rgba(0, 0, 255, 0.2);
+        }
+        
+        /* 节点内容 */
+        .node-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        
+        /* 节点名称 */
+        .node-name {
+            font-weight: bold;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        /* 垂直层级布局：利用flex实现子代在父代垂直投影内均匀分布 */
+        .generation-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 80px; /* 子代单元之间的间距 */
+        }
+    </style>
+</head>
+<body>
+    <h1>动态家族树可视化</h1>
+    
+    <!-- 按钮区域 -->

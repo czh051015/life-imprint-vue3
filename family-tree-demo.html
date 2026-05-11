@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态家族树可视化</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        
+        /* 页面标题 */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        /* 按钮容器 */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* 按钮样式 */
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+        
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .btn-danger:hover:not(:disabled) {
+            background-color: #da190b;
+        }
+        
+        /* 家族树容器 */
+        .family-tree-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* 家族树内容 */
+        .family-tree-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 80px; /* 代际之间的间距 */
+            position: relative;
+        }
+        
+        /* 代际分隔线 */
+        .generation-divider {
+            width: 80%;
+            height: 2px;
+            background-color: black;
+            position: absolute;
+            left: 10%;
+            z-index: 1;
+        }
+        
+        /* 行容器 - 每一代节点对应一个行容器 */
+        .generation-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* 代际标签 */
+        .generation-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        /* 父容器：包含父代家庭单元和子代区域，垂直排列 */
+        .parent-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px; /* 父容器之间的间距 */
+            position: relative;
+            /* 垂直投影区域：确保子代单元在此区域内分布 */
+            min-width: 90px; /* 2个节点宽度 + 间距 */
+        }
+        
+        /* 家庭单元 - 核心布局：将配偶节点与核心节点绑定为不可拆分的整体 */
+        .family-unit {
+            display: flex;
+            gap: 5px; /* 配偶间距 */
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        /* 子区域：该父代的所有子女，水平排列 */
+        .child-area {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 20px; /* 子女单元之间的间距 */
+            margin-top: 30px; /* 父代与子代之间的垂直间距 */
+            position: relative;
+            width: 100%;
+        }
+        
+        /* 父代与子代之间的垂直连接线 */
+        .parent-container::after {
+            content: '';
+            position: absolute;
+            top: 120px; /* 父代节点高度 */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 30px; /* 父代与子代之间的垂直间距 */
+            background-color: black;
+        }
+        
+        /* 没有子节点的父容器不显示连接线 */
+        .parent-container:has(.child-area:empty)::after {
+            display: none;
+        }
+        
+        /* 空的child-area不显示 */
+        .parent-container .child-area:empty {
+            display: none;
+        }
+        
+        /* 节点样式 - 竖长方形 */
+        .family-node {
+            width: 40px; /* 宽度40px，原80px的一半 */
+            height: 120px; /* 高度120px */
+            background-color: white;
+            border: 1px solid black; /* 黑色边框 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-align: center;
+        }
+        
+        /* 节点选中样式 - 蓝色边框 */
+        .family-node.selected {
+            border-color: blue;
+            box-shadow: 0 0 0 2px rgba(0, 0, 255, 0.2);
+        }
+        
+        /* 节点内容 */
+        .node-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        
+        /* 节点名称 */
+        .node-name {
+            font-weight: bold;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        /* 垂直层级布局：利用flex实现子代在父代垂直投影内均匀分布 */
+        .generation-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 80px; /* 子代单元之间的间距 */
+        }
+    </style>
+</head>
+<body>
+    <h1>动态家族树可视化</h1>
+    
+    <!-- 按钮区域 -->
+    <div class="button-container">
+        <button id="add-spouse-btn" class="btn-primary" disabled>添加配偶</button>
+        <button id="add-child-btn" class="btn-primary" disabled>添加子女</button>
+        <button id="delete-node-btn" class="btn-danger" disabled>删除节点</button>
+    </div>
+    
+    <!-- 家族树容器 -->
+    <div class="family-tree-container">
+        <!-- 家族树内容 - 动态生成 -->
+        <div class="family-tree-content" id="family-tree-content">
+            <!-- 第1代：根节点 -->
+            <div class="generation-row" data-generation="1">
+                <div class="generation-label">第1代</div>
+                <!-- 父容器：包含父代家庭单元和子代区域 -->
+                <div class="parent-container">
+                    <!-- 根节点家庭单元 -->
+                    <div class="family-unit">
+                        <!-- 根节点 -->
+                        <div class="family-node" data-node='{"id":1,"generation":1,"name":"始祖","parentId":null,"spouseId":2}'>
+                            <div class="node-content">
+                                <div class="node-name">始祖</div>
+                            </div>
+                        </div>
+                        <!-- 配偶节点 -->
+                        <div class="family-node" data-node='{"id":2,"generation":1,"name":"始祖配偶","parentId":null,"spouseId":1}'>
+                            <div class="node-content">
+                                <div class="node-name">始祖配偶</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 子区域：该父代的所有子女，水平排列 -->
+                    <div class="child-area">
+                        <!-- 第2代：始祖的子女 -->
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 80px; width: 100%;">
+                            <!-- 代际分隔线 -->
+                            <div class="generation-divider"></div>
+                            
+                            <div class="generation-row" data-generation="2">
+                                <div class="generation-label">第2代</div>
+                                
+                                <!-- 父容器：包含长子家庭单元和其子代区域 -->
+                                <div class="parent-container">
+                                    <!-- 长子家庭单元 -->
+                                    <div class="family-unit">
+                                        <div class="family-node" data-node='{"id":3,"generation":2,"name":"长子","parentId":1,"spouseId":4}'>
+                                            <div class="node-content">
+                                                <div class="node-name">长子</div>
+                                            </div>
+                                        </div>
+                                        <div class="family-node" data-node='{"id":4,"generation":2,"name":"长子配偶","parentId":null,"spouseId":3}'>
+                                            <div class="node-content">
+                                                <div class="node-name">长子配偶</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 子区域：长子的所有子女，水平排列 -->
+                                    <div class="child-area">
+                                        <!-- 第3代：长子的子女 -->
+                                        <div style="display: flex; flex-direction: column; align-items: center; gap: 80px; width: 100%;">
+                                            <!-- 代际分隔线 -->
+                                            <div class="generation-divider"></div>
+                                            
+                                            <div class="generation-row" data-generation="3">
+                                                <div class="generation-label">第3代</div>
+                                                
+                                                <!-- 父容器：包含长孙独立单元和其子代区域 -->
+                                                <div class="parent-container">
+                                                    <!-- 长孙独立单元 -->
+                                                    <div class="family-unit">
+                                                        <div class="family-node" data-node='{"id":7,"generation":3,"name":"长孙","parentId":3,"spouseId":null}'>
+                                                            <div class="node-content">
+                                                                <div class="node-name">长孙</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- 子区域：长孙的所有子女，水平排列 -->
+                                                    <div class="child-area"></div>
+                                                </div>
+                                                
+                                                <!-- 父容器：包含次孙家庭单元和其子代区域 -->
+                                                <div class="parent-container">
+                                                    <!-- 次孙家庭单元 -->
+                                                    <div class="family-unit">
+                                                        <div class="family-node" data-node='{"id":8,"generation":3,"name":"次孙","parentId":3,"spouseId":9}'>
+                                                            <div class="node-content">
+                                                                <div class="node-name">次孙</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="family-node" data-node='{"id":9,"generation":3,"name":"次孙配偶","parentId":null,"spouseId":8}'>
+                                                            <div class="node-content">
+                                                                <div class="node-name">次孙配偶</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- 子区域：次孙的所有子女，水平排列 -->
+                                                    <div class="child-area">
+                                                        <!-- 第4代：次孙的子女 -->
+                                                        <div style="display: flex; flex-direction: column; align-items: center; gap: 80px; width: 100%;">
+                                                            <!-- 代际分隔线 -->
+                                                            <div class="generation-divider"></div>
+                                                            
+                                                            <div class="generation-row" data-generation="4">
+                                                                <div class="generation-label">第4代</div>
+                                                                
+                                                                <!-- 父容器：包含曾长孙家庭单元和其子代区域 -->
+                                                                <div class="parent-container">
+                                                                    <!-- 曾长孙家庭单元 -->
+                                                                    <div class="family-unit">
+                                                                        <div class="family-node" data-node='{"id":11,"generation":4,"name":"曾长孙","parentId":8,"spouseId":12}'>
+                                                                            <div class="node-content">
+                                                                                <div class="node-name">曾长孙</div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="family-node" data-node='{"id":12,"generation":4,"name":"曾长孙配偶","parentId":null,"spouseId":11}'>
+                                                                            <div class="node-content">
+                                                                                <div class="node-name">曾长孙配偶</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- 子区域：曾长孙的所有子女，水平排列 -->
+                                                                    <div class="child-area"></div>
+                                                                </div>
+                                                                
+                                                                <!-- 父容器：包含曾次孙独立单元和其子代区域 -->
+                                                                <div class="parent-container">
+                                                                    <!-- 曾次孙独立单元 -->
+                                                                    <div class="family-unit">
+                                                                        <div class="family-node" data-node='{"id":13,"generation":4,"name":"曾次孙","parentId":8,"spouseId":null}'>
+                                                                            <div class="node-content">
+                                                                                <div class="node-name">曾次孙</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- 子区域：曾次孙的所有子女，水平排列 -->
+                                                                    <div class="child-area"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 父容器：包含次子独立单元和其子代区域 -->
+                                <div class="parent-container">
+                                    <!-- 次子独立单元 -->
+                                    <div class="family-unit">
+                                        <div class="family-node" data-node='{"id":5,"generation":2,"name":"次子","parentId":1,"spouseId":null}'>
+                                            <div class="node-content">
+                                                <div class="node-name">次子</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 子区域：次子的所有子女，水平排列 -->
+                                    <div class="child-area"></div>
+                                </div>
+                                
+                                <!-- 父容器：包含三子独立单元和其子代区域 -->
+                                <div class="parent-container">
+                                    <!-- 三子独立单元 -->
+                                    <div class="family-unit">
+                                        <div class="family-node" data-node='{"id":6,"generation":2,"name":"三子","parentId":1,"spouseId":null}'>
+                                            <div class="node-content">
+                                                <div class="node-name">三子</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 子区域：三子的所有子女，水平排列 -->
+                                    <div class="child-area">
+                                        <!-- 第3代：三子的子女 -->
+                                        <div style="display: flex; flex-direction: column; align-items: center; gap: 80px; width: 100%;">
+                                            <!-- 代际分隔线 -->
+                                            <div class="generation-divider"></div>
+                                            
+                                            <div class="generation-row" data-generation="3">
+                                                <div class="generation-label">第3代</div>
+                                                
+                                                <!-- 父容器：包含三子之子独立单元和其子代区域 -->
+                                                <div class="parent-container">
+                                                    <!-- 三子之子独立单元 -->
+                                                    <div class="family-unit">
+                                                        <div class="family-node" data-node='{"id":10,"generation":3,"name":"三子之子","parentId":6,"spouseId":null}'>
+                                                            <div class="node-content">
+                                                                <div class="node-name">三子之子</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- 子区域：三子之子的所有子女，水平排列 -->
+                                                    <div class="child-area"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 节点ID计数器
+        let nodeIdCounter = 14;
+        
+        // 当前选中的节点
+        let selectedNode = null;
+        
+        // 初始化事件监听
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化节点点击事件
+            initNodeClickEvents();
+            
+            // 初始化按钮事件
+            initButtonEvents();
+        });
+        
+        // 初始化节点点击事件
+        function initNodeClickEvents() {
+            const nodes = document.querySelectorAll('.family-node');
+            nodes.forEach(node => {
+                node.addEventListener('click', (e) => selectNode(e));
+            });
+        }
+        
+        // 初始化按钮事件
+        function initButtonEvents() {
+            // 添加配偶按钮
+            document.getElementById('add-spouse-btn').addEventListener('click', addSpouseBtnClick);
+            
+            // 添加子女按钮
+            document.getElementById('add-child-btn').addEventListener('click', addChildBtnClick);
+            
+            // 删除节点按钮
+            document.getElementById('delete-node-btn').addEventListener('click', deleteNodeBtnClick);
+        }
+        
+        // 选择节点
+        function selectNode(event) {
+            // 获取实际的节点元素
+            let node = event.target;
+            if (node.tagName !== 'DIV' || !node.classList.contains('family-node')) {
+                node = node.closest('.family-node');
+            }
+            
+            // 移除之前选中的样式
+            document.querySelectorAll('.family-node').forEach(n => {
+                n.classList.remove('selected');
+            });
+            
+            // 添加选中样式
+            node.classList.add('selected');
+            selectedNode = node;
+            
+            // 启用按钮
+            enableButtons();
+        }
+        
+        // 启用按钮
+        function enableButtons() {
+            document.getElementById('add-spouse-btn').disabled = false;
+            document.getElementById('add-child-btn').disabled = false;
+            document.getElementById('delete-node-btn').disabled = false;
+        }
+        
+        // 禁用按钮
+        function disableButtons() {
+            document.getElementById('add-spouse-btn').disabled = true;
+            document.getElementById('add-child-btn').disabled = true;
+            document.getElementById('delete-node-btn').disabled = true;
+        }
+        
+        // 添加配偶按钮点击事件
+        function addSpouseBtnClick() {
+            if (!selectedNode) return;
+            const nodeData = JSON.parse(selectedNode.dataset.node);
+            addSpouse(null, nodeData.id);
+        }
+        
+        // 添加子女按钮点击事件
+        function addChildBtnClick() {
+            if (!selectedNode) return;
+            const nodeData = JSON.parse(selectedNode.dataset.node);
+            addChild(null, nodeData.id);
+        }
+        
+        // 删除节点按钮点击事件
+        function deleteNodeBtnClick() {
+            if (!selectedNode) return;
+            deleteNode();
+        }
+        
+        // 添加子女
+        function addChild(event, parentId) {
+            // 找到父节点
+            const parentNode = findNodeById(parentId);
+            if (!parentNode) return;
+            
+            const parentData = JSON.parse(parentNode.dataset.node);
+            
+            // 创建子女节点数据
+            const childData = {
+                id: nodeIdCounter++,
+                generation: parentData.generation + 1,
+                name: "子女",
+                parentId: parentId,
+                spouseId: null
+            };
+            
+            // 找到父节点所在的父容器
+            const parentContainer = parentNode.closest('.parent-container');
+            
+            // 在父容器中找到子区域
+            let childArea = parentContainer.querySelector('.child-area');
+            
+            // 如果子区域不存在，创建子区域
+            if (!childArea) {
+                childArea = document.createElement('div');
+                childArea.className = 'child-area';
+                parentContainer.appendChild(childArea);
+            }
+            
+            // 创建新的家庭单元
+            const familyUnit = document.createElement('div');
+            familyUnit.className = 'family-unit';
+            
+            // 创建子女节点
+            const childNode = document.createElement('div');
+            childNode.className = 'family-node';
+            childNode.dataset.node = JSON.stringify(childData);
+            
+            // 创建节点内容
+            childNode.innerHTML = `
+                <div class="node-content">
+                    <div class="node-name">${childData.name}</div>
+                </div>
+            `;
+            
+            // 添加点击事件
+            childNode.addEventListener('click', (e) => selectNode(e));
+            
+            // 将子女节点添加到家庭单元
+            familyUnit.appendChild(childNode);
+            
+            // 检查子区域中是否已经有对应的generation-row
+            let generationRow = childArea.querySelector('.generation-row');
+            if (!generationRow) {
+                // 创建新的代际容器
+                const genContainer = document.createElement('div');
+                genContainer.style.display = 'flex';
+                genContainer.style.flexDirection = 'column';
+                genContainer.style.alignItems = 'center';
+                genContainer.style.gap = '80px';
+                genContainer.style.width = '100%';
+                
+                // 添加代际分隔线
+                const divider = document.createElement('div');
+                divider.className = 'generation-divider';
+                genContainer.appendChild(divider);
+                
+                // 创建新的generation-row
+                generationRow = document.createElement('div');
+                generationRow.className = 'generation-row';
+                generationRow.dataset.generation = childData.generation;
+                
+                // 创建代际标签
+                const generationLabel = document.createElement('div');
+                generationLabel.className = 'generation-label';
+                generationLabel.textContent = `第${childData.generation}代`;
+                generationRow.appendChild(generationLabel);
+                
+                genContainer.appendChild(generationRow);
+                childArea.appendChild(genContainer);
+            }
+            
+            // 创建新的父容器
+            const newParentContainer = document.createElement('div');
+            newParentContainer.className = 'parent-container';
+            newParentContainer.appendChild(familyUnit);
+            
+            // 创建子区域
+            const newChildArea = document.createElement('div');
+            newChildArea.className = 'child-area';
+            newParentContainer.appendChild(newChildArea);
+            
+            // 将新的父容器添加到generation-row
+            generationRow.appendChild(newParentContainer);
+            
+            console.log('添加子女成功:', childData);
+        }
+        
+        // 添加配偶
+        function addSpouse(event, nodeId) {
+            // 找到目标节点
+            const targetNode = findNodeById(nodeId);
+            if (!targetNode) return;
+            
+            const targetData = JSON.parse(targetNode.dataset.node);
+            
+            // 检查是否已有配偶
+            if (targetData.spouseId) {
+                alert('该节点已添加配偶，不可重复添加');
+                return;
+            }
+            
+            // 创建配偶节点数据
+            const spouseData = {
+                id: nodeIdCounter++,
+                generation: targetData.generation,
+                name: "配偶",
+                parentId: null,
+                spouseId: nodeId
+            };
+            
+            // 更新目标节点的配偶ID
+            targetData.spouseId = spouseData.id;
+            targetNode.dataset.node = JSON.stringify(targetData);
+            
+            // 检查目标节点是否已经在家庭单元中
+            let familyUnit = targetNode.parentElement;
+            if (!familyUnit.classList.contains('family-unit')) {
+                // 如果不在家庭单元中，创建一个
+                familyUnit = document.createElement('div');
+                familyUnit.className = 'family-unit';
+                
+                // 替换节点位置
+                targetNode.parentElement.insertBefore(familyUnit, targetNode);
+                familyUnit.appendChild(targetNode);
+            }
+            
+            // 创建配偶节点
+            const spouseNode = document.createElement('div');
+            spouseNode.className = 'family-node';
+            spouseNode.dataset.node = JSON.stringify(spouseData);
+            
+            // 创建节点内容
+            spouseNode.innerHTML = `
+                <div class="node-content">
+                    <div class="node-name">${spouseData.name}</div>
+                </div>
+            `;
+            
+            // 添加点击事件
+            spouseNode.addEventListener('click', (e) => selectNode(e));
+            
+            // 将配偶节点添加到家庭单元
+            familyUnit.appendChild(spouseNode);
+            
+            console.log('添加配偶成功:', spouseData);
+        }
+        
+        // 根据ID查找节点
+        function findNodeById(id) {
+            const nodes = document.querySelectorAll('.family-node');
+            for (const node of nodes) {
+                const nodeData = JSON.parse(node.dataset.node);
+                if (nodeData.id === id) {
+                    return node;
+                }
+            }
+            return null;
+        }
+        
+        // 删除节点 - 删除逻辑：删除该节点（含配偶）及所有子代节点
+        function deleteNode() {
+            if (!selectedNode) return;
+            
+            // 确认删除
+            if (!confirm('确定要删除该节点（含配偶）及所有子代节点吗？')) {
+                return;
+            }
+            
+            // 获取选中节点的数据
+            const nodeData = JSON.parse(selectedNode.dataset.node);
+            
+            // 1. 如果有配偶，删除配偶节点
+            if (nodeData.spouseId) {
+                // 查找配偶节点
+                const spouseNode = findNodeById(nodeData.spouseId);
+                if (spouseNode) {
+                    spouseNode.remove();
+                }
+            }
+            
+            // 2. 查找并删除所有子女节点
+            const childrenNodes = [];
+            const allNodes = document.querySelectorAll('.family-node');
+            
+            // 先收集所有需要删除的子女节点
+            allNodes.forEach(node => {
+                const data = JSON.parse(node.dataset.node);
+                if (data.parentId === nodeData.id) {
+                    childrenNodes.push(node);
+                }
+            });
+            
+            // 删除每个子女节点及其配偶和后代
+            childrenNodes.forEach(childNode => {
+                // 递归删除子女节点
+                deleteNodeRecursive(childNode);
+            });
+            
+            // 3. 删除当前节点
+            selectedNode.remove();
+            
+            // 4. 清理空的家庭单元
+            cleanEmptyElements('.family-unit');
+            
+            // 5. 清理空的父容器
+            cleanEmptyElements('.parent-container');
+            
+            // 6. 清理空的generation-row
+            cleanEmptyElements('.generation-row');
+            
+            // 7. 清理空的代际容器
+            const genContainers = document.querySelectorAll('[style*="flex-direction: column"]');
+            genContainers.forEach(container => {
+                if (container.children.length === 0) {
+                    container.remove();
+                }
+            });
+            
+            // 8. 重置选中状态
+            selectedNode = null;
+            
+            // 9. 禁用按钮
+            disableButtons();
+            
+            console.log('删除节点成功');
+        }
+        
+        // 递归删除节点及其后代
+        function deleteNodeRecursive(node) {
+            const nodeData = JSON.parse(node.dataset.node);
+            
+            // 1. 删除配偶节点
+            if (nodeData.spouseId) {
+                const spouseNode = findNodeById(nodeData.spouseId);
+                if (spouseNode) {
+                    spouseNode.remove();
+                }
+            }
+            
+            // 2. 查找并删除所有子女节点
+            const childrenNodes = [];
+            const allNodes = document.querySelectorAll('.family-node');
+            
+            allNodes.forEach(childNode => {
+                const data = JSON.parse(childNode.dataset.node);
+                if (data.parentId === nodeData.id) {
+                    childrenNodes.push(childNode);
+                }
+            });
+            
+            // 递归删除每个子女节点
+            childrenNodes.forEach(childNode => {
+                deleteNodeRecursive(childNode);
+            });
+            
+            // 3. 删除当前节点
+            node.remove();
+        }
+        
+        // 清理空元素
+        function cleanEmptyElements(selector) {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(element => {
+                if (element.children.length === 0) {
+                    element.remove();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

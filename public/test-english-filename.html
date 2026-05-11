@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英文文件名测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .test-image { width: 200px; height: auto; margin: 10px 0; }
+        .test-url { word-break: break-all; }
+        .debug-info { background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>英文文件名测试</h1>
+    
+    <div class="test-section">
+        <h2>测试说明</h2>
+        <p>本页面用于测试英文文件名的图片是否可以正常访问</p>
+        <p>如果英文文件名的图片可以访问，而中文文件名的图片不能访问，说明是中文文件名导致的问题</p>
+    </div>
+    
+    <!-- 测试英文文件名的图片 -->
+    <div class="test-section">
+        <h2>1. 测试英文文件名的图片</h2>
+        <p class="test-url">URL: http://localhost:5173/img/stories/test.jpg</p>
+        <img class="test-image" id="testImage" src="/img/stories/test.jpg" alt="测试图片">
+        <div id="imageStatus" class="debug-info">正在检查...</div>
+    </div>
+    
+    <!-- 测试中文文件名的图片 -->
+    <div class="test-section">
+        <h2>2. 测试中文文件名的图片</h2>
+        <p class="test-url">URL: http://localhost:5173/img/stories/家族成立.jpg</p>
+        <img class="test-image" id="testImageCn" src="/img/stories/家族成立.jpg" alt="家族成立">
+        <div id="imageStatusCn" class="debug-info">正在检查...</div>
+    </div>
+    
+    <script>
+        // 测试英文文件名的图片
+        const testImage = document.getElementById('testImage');
+        const imageStatus = document.getElementById('imageStatus');
+        
+        testImage.onload = () => {
+            imageStatus.textContent = '✅ 英文文件名图片加载成功！这说明是中文文件名导致的问题';
+            imageStatus.className = 'success debug-info';
+        };
+        
+        testImage.onerror = (error) => {
+            imageStatus.innerHTML = `❌ 英文文件名图片加载失败！<br>错误信息: ${error.message}`;
+            imageStatus.className = 'error debug-info';
+        };
+        
+        // 测试中文文件名的图片
+        const testImageCn = document.getElementById('testImageCn');
+        const imageStatusCn = document.getElementById('imageStatusCn');
+        
+        testImageCn.onload = () => {
+            imageStatusCn.textContent = '✅ 中文文件名图片加载成功！';
+            imageStatusCn.className = 'success debug-info';
+        };
+        
+        testImageCn.onerror = (error) => {
+            imageStatusCn.innerHTML = `❌ 中文文件名图片加载失败！<br>错误信息: ${error.message}`;
+            imageStatusCn.className = 'error debug-info';
+        };
+    </script>
+</body>
+</html>

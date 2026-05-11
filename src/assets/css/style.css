@@ -1,0 +1,2052 @@
+/* 传统中国风格字体和颜色体系 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Serif SC', serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: #f8f3e9;
+    overflow-x: hidden;
+}
+
+/* 传统风格边框 */
+.traditional-border {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d4a574' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+/* 满屏布局 */
+.fullscreen {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 主内容区域布局 */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 60px); /* 减去导航栏高度 */
+}
+
+/* 第一屏背景 */
+.page-section:nth-child(1) {
+    background-color: #5a8395;
+}
+
+/* 第一屏左右分栏布局 */
+.first-screen-layout {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* 左侧分栏（家族树） */
+.left-column {
+    width: 66.67%;
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 右侧分栏（功能区域） */
+.right-column {
+    width: 33.33%;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 右侧固定功能栏 */
+.fixed-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-left: 1px solid var(--border-color);
+    background-color: var(--background-color);
+}
+
+/* 家族树区域 */
+.family-tree-area {
+    background-color: var(--background-color);
+}
+
+/* 家族树容器 */
+.family-tree {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+    overflow: auto;
+    padding: 20px;
+}
+
+/* 家族树节点 */
+.tree-node {
+    position: absolute;
+    padding: 15px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 100px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+/* 男性节点样式 */
+.tree-node.male {
+    background-color: #164962;
+    color: white;
+    border: 2px solid #164962;
+}
+
+/* 女性节点样式 */
+.tree-node.female {
+    background-color: #f48fb1;
+    color: white;
+    border: 2px solid #f48fb1;
+}
+
+/* 节点名称 */
+.node-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* 选中节点样式 */
+.tree-node.selected {
+    border: 3px solid var(--selected-border-color);
+    transform: scale(1.1);
+    z-index: 20;
+}
+
+/* 节点连接线样式 */
+.tree-node::before,
+.tree-node::after {
+    content: '';
+    position: absolute;
+    background-color: var(--border-color);
+    z-index: 5;
+}
+
+/* 管理员功能栏样式 */
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 关系管理区 */
+.relationship-management {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* 基础信息卡片 */
+.basic-info-card {
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: white;
+}
+
+/* 性别选择 */
+.gender-select {
+    display: flex;
+    gap: 15px;
+    margin-top: 5px;
+}
+
+/* 操作区 */
+.operation-area {
+    margin-top: 10px;
+}
+
+/* 普通用户信息展示区 */
+.basic-info-display {
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 信息项 */
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+/* 信息标签 */
+.info-label {
+    font-weight: bold;
+}
+
+/* 查看详情按钮 */
+.detail-button {
+    margin-top: 10px;
+}
+
+/* 顶部搜索与筛选区域 */
+.top-filters {
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-color);
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 家族树主要内容区域 */
+.family-main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* 左侧家族树显示区域 */
+.family-tree-container {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-color);
+    margin-bottom: 15px;
+    overflow: auto;
+    cursor: grab;
+}
+
+.family-tree-container:active {
+    cursor: grabbing;
+}
+
+/* 右侧信息统计区域 */
+.family-info-container {
+    width: 100%;
+    padding: 15px;
+    background-color: rgba(248, 243, 233, 0.7);
+    border-left: 1px solid var(--border-color);
+    overflow-y: auto;
+}
+
+/* 第三屏左右分栏布局 */
+.third-screen-layout {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+.third-screen-layout .left-column {
+    width: 30%;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.third-screen-layout .right-column {
+    width: 70%;
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 中国地图容器样式 */
+#china-map {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+/* 地图容器样式 */
+.map-container {
+    flex: 1;
+    min-height: 500px;
+    position: relative;
+    z-index: 1;
+}
+
+/* 迁徙地图容器样式 */
+.migration-map {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 迁徙信息样式 */
+.migration-info {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: rgba(248, 243, 233, 0.9);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.migration-details {
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+.migration-details h5 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.migration-details ul {
+    list-style: none;
+    padding: 0;
+}
+
+.migration-details li {
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(22, 73, 98, 0.1);
+}
+
+.migration-details li:last-child {
+    border-bottom: none;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+    .family-main-content {
+        flex-direction: column;
+    }
+    
+    .family-tree-container,
+    .family-info-container {
+        width: 100%;
+        height: 50%;
+    }
+    
+    .third-screen-layout {
+        flex-direction: column;
+    }
+    
+    .third-screen-layout .left-column,
+    .third-screen-layout .right-column {
+        width: 100%;
+        height: 50%;
+    }
+}
+
+/* 垂直文字样式 */
+.vertical-text {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    font-family: 'Noto Serif SC', serif;
+}
+
+/* 家族大事记模块样式 */
+.stories-container.horizontal-layout {
+    display: flex;
+    height: 500px;
+    overflow: hidden;
+}
+
+.story-image-container {
+    width: 40%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.story-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease-in-out;
+    transform: translateX(-100%);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.story-image.active {
+    transform: translateX(0);
+}
+
+.story-titles.vertical-titles {
+    width: 60%;
+    height: 100%;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: rgba(255, 255, 255, 0.7);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+    flex-wrap: nowrap;
+}
+
+.vertical-title-link {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 5px;
+    opacity: 0;
+    animation: titleSlideInDown 1.5s ease-out forwards;
+    display: inline-block;
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vertical-title-link:nth-child(odd) {
+    animation-name: titleSlideInDown;
+    animation-delay: calc(0.1s * var(--index));
+}
+
+.vertical-title-link:nth-child(even) {
+    animation-name: titleSlideInUp;
+    animation-delay: calc(0.1s * var(--index));
+}
+
+.vertical-title-link:hover {
+    color: var(--secondary-color);
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: scale(1.1);
+}
+
+@keyframes titleSlideInDown {
+    0% {
+        transform: translateY(-200%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes titleSlideInUp {
+    0% {
+        transform: translateY(200%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* 统一色彩体系 */
+:root {
+    /* 主色调 - 传统中国红色 */
+    --primary-color: #164962;
+    /* 辅助色 - 蓝色系 */
+    --secondary-color: #2a6b8c;
+    /* 高亮色 - 蓝色系 */
+    --highlight-color: #1a536b;
+    /* 背景色 - 宣纸色 */
+    --background-color: #f8f3e9;
+    /* 文字色 - 蓝色系 */
+    --text-color: #164962;
+    /* 边框色 - 蓝色系 */
+    --border-color: #2a6b8c;
+    /* 男性色 - 蓝色系 */
+    --male-color: #e3f2fd;
+    /* 女性色 - 粉色系 */
+    --female-color: #f0d9d9;
+    /* 选中节点边框色 */
+    --selected-border-color: #164962;
+    /* 高亮节点背景色 */
+    --highlighted-background-color: #f0f8ff;
+    /* 配偶连接线颜色 */
+    --spouse-line-color: #164962;
+    /* 父母子女连接线颜色 */
+    --parent-child-line-color: #2a6b8c;
+}
+
+/* 传统输入框和选择框样式 */
+.traditional-input,
+.traditional-select {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--background-color);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 14px;
+}
+
+/* 传统标签样式 */
+.traditional-label {
+    font-family: 'Noto Serif SC', serif;
+    color: var(--text-color);
+    margin-right: 8px;
+}
+
+/* 传统按钮样式 */
+.traditional-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%; /* 改为圆形 */
+    background-color: var(--secondary-color); /* 使用更深的背景色 */
+    color: var(--background-color); /* 文字颜色改为背景色以提高对比度 */
+    font-family: 'Noto Serif SC', serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.traditional-btn:hover {
+    background-color: var(--primary-color); /* 悬停时使用更深的颜色 */
+    color: var(--background-color);
+    transform: scale(1.05); /* 悬停时稍微放大 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
+}
+
+/* 传统卡片样式 */
+.traditional-card {
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-color);
+    margin-bottom: 15px;
+}
+
+/* 传统节标题样式 */
+.section-title {
+    font-family: 'Noto Serif SC', serif;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* 传统链接样式 */
+.traditional-link {
+    text-decoration: none;
+    color: var(--text-color);
+    margin: 0 15px;
+    font-family: 'Noto Serif SC', serif;
+    transition: all 0.3s ease;
+}
+
+.traditional-link:hover,
+.traditional-link.active {
+    color: var(--secondary-color);
+}
+
+/* 传统导航栏样式 */
+.traditional-navbar {
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 传统标题样式 */
+.traditional-title {
+    font-family: 'Noto Serif SC', serif;
+    color: var(--text-color);
+    margin: 0;
+}
+
+/* 状态样式 */
+.node-selected {
+    border: 3px solid var(--selected-border-color) !important;
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+}
+
+.node-highlighted {
+    background-color: var(--highlighted-background-color) !important;
+    transition: all 0.3s ease;
+}
+
+/* 操作反馈提示 */
+.operation-feedback {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    background-color: var(--secondary-color);
+    color: var(--background-color);
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background-color: #164962;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(22, 73, 98, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.btn-primary:hover {
+    background-color: #164962;
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(22, 73, 98, 0.3);
+}
+
+.btn-secondary {
+    background-color: #164962;
+    color: white;
+    border: 1px solid #164962;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(22, 73, 98, 0.2);
+}
+
+.btn-secondary:hover {
+    background-color: #164962;
+    opacity: 0.9;
+    color: white;
+    border-color: #164962;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(22, 73, 98, 0.3);
+}
+
+/* 登录注册页样式 */
+.logo {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.logo h1 {
+    color: var(--primary-color);
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.logo p {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.auth-form {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.6); /* 降低透明度的半透明白色背景 */
+    backdrop-filter: blur(15px); /* 增强磨砂玻璃效果 */
+    -webkit-backdrop-filter: blur(15px); /* Safari 兼容 */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* 增强阴影效果 */
+    border: 1px solid rgba(255, 255, 255, 0.6); /* 半透明边框 */
+    transition: all 0.3s ease;
+}
+
+.form-tabs {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    background-color: rgba(248, 243, 233, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+}
+
+.tab-btn:hover {
+    background-color: rgba(248, 243, 233, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.tab-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(22, 73, 98, 0.3);
+}
+
+.form-content {
+    display: none;
+    background-color: transparent;
+}
+
+.form-content.active {
+    display: block;
+    background-color: transparent;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(22, 73, 98, 0.3);
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: rgba(248, 243, 233, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    color: var(--text-color);
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(22, 73, 98, 0.2);
+    background-color: rgba(248, 243, 233, 0.9);
+}
+
+/* 导航栏样式 */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: white;
+    padding: 15px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 全屏页面部分样式 */
+.page-section {
+    height: 100vh;
+    padding-top: 60px;
+    overflow: hidden;
+    position: relative;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.nav-left h2 {
+    color: var(--text-color);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-color);
+    margin: 0 15px;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.nav-link.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+/* 个人展厅样式 */
+.personal-header {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.view-controls {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.avatar-section {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    font-size: 24px;
+    color: #666;
+}
+
+.upload-section {
+    display: flex;
+    align-items: center;
+}
+
+#file-input {
+    display: none;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.content-category {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.content-category h3 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.item-grid div {
+    width: 100px;
+    height: 100px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.item-grid div:hover {
+    transform: scale(1.05);
+}
+
+/* 内容项目样式 */
+.content-item {
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 120px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.content-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.item-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.item-name {
+    font-size: 12px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.item-time {
+    font-size: 10px;
+    color: #666;
+    margin-top: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.content-item:hover .item-time {
+    opacity: 1;
+}
+
+/* 日记样式 */
+.diary-item {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.diary-item:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.diary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.diary-title {
+    margin: 0;
+    color: #333;
+}
+
+.diary-date {
+    font-size: 12px;
+    color: #666;
+    cursor: help;
+}
+
+.diary-content-preview {
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.diary-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: modalopen 0.3s;
+}
+
+.modal-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.close-btn {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.modal-footer {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 0 0 8px 8px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--highlight-color);
+}
+
+.btn-secondary {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #e0e0e0;
+}
+
+.btn-danger {
+    background-color: #164962;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: #164962;
+    opacity: 0.9;
+    color: white;
+}
+
+@keyframes modalopen {
+    from {opacity: 0; transform: translateY(-50px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* 成长日记模板样式 */
+.growth-photos-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.growth-photo-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: white;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.growth-photo-item:hover {
+    background-color: #f0f0f0;
+}
+
+.growth-photo-preview {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.growth-photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.growth-photo-info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.growth-photo-name {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+.growth-photo-checkbox {
+    width: auto;
+    margin-right: 5px;
+}
+
+/* 编辑模态框样式 */
+#edit-filename {
+    margin-bottom: 15px;
+}
+
+#edit-notes {
+    margin-bottom: 15px;
+    resize: vertical;
+}
+
+#edit-birth-year {
+    margin-bottom: 15px;
+}
+
+#edit-album {
+    margin-bottom: 15px;
+    width: 100%;
+    padding: 8px;
+}
+
+/* 多屏滚动样式 */
+.page-section {
+    height: 100vh;
+    padding-top: 60px;
+    overflow-y: hidden;
+    position: relative;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* 第三屏背景图和遮罩 */
+.page-section:nth-child(3) {
+    background-image: url('../img/3.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.page-section:nth-child(3)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    z-index: 1;
+}
+
+.page-section:nth-child(3) > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* 修改导航栏为固定定位 */
+.traditional-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* 家族展厅样式 */
+.family-header {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 搜索与筛选样式 */
+.family-filters {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.filter-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filter-item label {
+    font-weight: bold;
+    margin: 0;
+}
+
+.filter-item input,
+.filter-item select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: auto;
+    min-width: 120px;
+}
+
+#clear-filters {
+    margin-left: auto;
+}
+
+.family-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.family-tree {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: auto;
+    overflow: visible;
+}
+
+/* 横向家族树样式 */
+.family-tree.horizontal {
+    overflow: visible;
+}
+
+.tree-container {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    padding: 20px;
+    min-width: max-content;
+    min-height: max-content;
+}
+
+.generation-row {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    position: relative;
+}
+
+.generation-row::after {
+    content: '';
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.generation-row:last-child::after {
+    display: none;
+}
+
+.tree-node {
+    position: relative;
+    margin: 0 20px;
+}
+
+.node-content {
+    padding: 15px;
+    background-color: var(--background-color);
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    box-shadow: 0 2px 8px rgba(22, 73, 98, 0.1);
+}
+
+.node-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.node-content.selected {
+    border-color: var(--selected-border-color);
+    background-color: var(--highlighted-background-color);
+    font-weight: bold;
+}
+
+.node-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.node-generation {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 性别颜色区分 */
+.gender-男, .gender-男.selected {
+    border-color: var(--primary-color);
+    background-color: var(--male-color);
+}
+
+.gender-女, .gender-女.selected {
+    border-color: var(--primary-color);
+    background-color: var(--female-color);
+}
+
+/* 连接线样式 */
+.tree-container::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 1px;
+    height: calc(100% - 40px);
+    background-color: var(--parent-child-line-color);
+    z-index: -1;
+}
+
+.generation-row .tree-node:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -30px;
+    width: 30px;
+    height: 1px;
+    background-color: var(--parent-child-line-color);
+}
+
+/* 配偶连接线样式 */
+.tree-node.spouse::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -15px;
+    width: 15px;
+    height: 2px;
+    background-color: var(--spouse-line-color);
+}
+
+.family-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.family-info h3 {
+    color: var(--primary-color);
+}
+
+#selected-member-info {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 200px;
+}
+
+.family-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stat-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.stat-card h4 {
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.stat-card p {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* 时间线视图样式 */
+.timeline-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.timeline {
+    position: relative;
+}
+
+.timeline-date-section {
+    margin-bottom: 30px;
+}
+
+.timeline-date {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.timeline-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.timeline-item:hover {
+    background-color: #f0f0f0;
+    transform: translateX(5px);
+}
+
+.timeline-preview {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.timeline-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.audio-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--male-color);
+    font-size: 24px;
+}
+
+.audio-preview span {
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.timeline-item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.timeline-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.timeline-item-name {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.timeline-item-time {
+    font-size: 12px;
+    color: #666;
+}
+
+.timeline-item-notes {
+    margin: 10px 0 0 0;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.4;
+}
+
+.timeline-item-actions {
+    margin-top: 10px;
+}
+
+.btn-secondary.small {
+    padding: 5px 10px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .personal-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .avatar-section {
+        flex-direction: column;
+    }
+    
+    .upload-section {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .family-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .navbar {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .nav-right {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* 注册表单样式 */
+.auto-generate {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.family-field {
+    display: none;
+}
+
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    background-color: var(--background-color);
+    margin: 5% auto;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    animation: slideIn 0.3s;
+}
+
+.modal-header {
+    padding: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.close {
+    color: #fff;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+/* 按钮样式 */
+.btn-danger {
+    background-color: #164962;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.btn-danger:hover {
+    background-color: #164962;
+    opacity: 0.9;
+}
+
+/* 小按钮样式 */
+.btn-small {
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 3px;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes slideIn {
+    from {transform: translateY(-50px); opacity: 0;}
+    to {transform: translateY(0); opacity: 1;}
+}
+
+/* 性别颜色区分增强 */
+.gender-男 {
+    border: 3px solid var(--male-color);
+    background-color: var(--male-color);
+    color: var(--text-color);
+}
+
+.gender-男.selected {
+    border: 3px solid var(--selected-border-color);
+    background-color: var(--male-color);
+    color: var(--text-color);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+}
+
+.gender-女 {
+    border: 3px solid var(--female-color);
+    background-color: var(--female-color);
+    color: var(--text-color);
+}
+
+.gender-女.selected {
+    border: 3px solid var(--selected-border-color);
+    background-color: var(--female-color);
+    color: var(--text-color);
+    box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.3);
+}
+
+/* 性别图标指示 */
+.gender-男::before {
+    content: "♂";
+    font-size: 18px;
+    margin-right: 5px;
+    color: #2196F3;
+    vertical-align: middle;
+}
+
+.gender-女::before {
+    content: "♀";
+    font-size: 18px;
+    margin-right: 5px;
+    color: #1c2939;
+    vertical-align: middle;
+}
+
+/* 选中节点样式增强 */
+.node-content.selected {
+    box-shadow: 0 0 0 3px rgba(166, 47, 38, 0.5);
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+/* 树形节点样式增强 */
+.tree-node {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* 家族大事记模块样式 */
+.family-modules {
+    padding: 40px 20px;
+    background-image: url('../img/3.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.family-modules::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+}
+
+.family-modules > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* 第二屏：家族大事记（无背景图） */
+.stories-section {
+    background-image: none !important;
+    background-color: var(--background-color) !important;
+}
+
+.stories-section::before {
+    display: none !important;
+}
+
+/* 模块容器 */
+.module-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-bottom: 60px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 30px;
+}
+
+.module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.module-title {
+    font-size: 28px;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+/* 家族大事记卡片样式 */
+.story-card {
+    display: flex;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.story-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 左侧图片容器 */
+.story-image-container {
+    width: 30%;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+.story-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.story-card:hover .story-image {
+    transform: scale(1.1);
+}
+
+/* 右侧内容容器 */
+.story-content-container {
+    width: 70%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* 竖向标题样式 */
+.story-title-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    margin-bottom: 20px;
+    align-self: flex-end;
+}
+
+.story-date {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    align-self: flex-end;
+}
+
+.story-content {
+    font-size: 16px;
+    color: var(--text-color);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.story-members {
+    font-size: 14px;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.story-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* 页面切换动画效果 */
+.page-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.page-transition.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 添加页面进入和退出动画类 */
+.page-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.page-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.page-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* 节点操作模块样式 */
+#node-operations {
+    max-height: 200px;
+    padding: 15px;
+}
+
+.operation-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.operation-section {
+    padding: 8px;
+    background-color: rgba(248, 243, 233, 0.6);
+    border-radius: 8px;
+}
+
+.operation-buttons {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.operation-buttons .btn-secondary {
+    padding: 5px 10px;
+    font-size: 12px;
+    margin: 0;
+}
+
+.name-edit-section {
+    margin-top: 6px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.name-edit-section input {
+    flex: 1;
+    padding: 5px 8px;
+    font-size: 12px;
+    margin: 0;
+}
+
+.name-edit-section .btn-primary {
+    padding: 5px 10px;
+    font-size: 12px;
+    margin: 0;
+}
+
+/* 调整家族管理卡片的padding */
+.family-management {
+    padding: 15px;
+}
+
+.section-title {
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    font-size: 16px;
+}

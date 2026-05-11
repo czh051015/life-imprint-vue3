@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>详细图片访问测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .test-image { width: 200px; height: auto; margin: 10px 0; }
+        .test-url { word-break: break-all; }
+        .debug-info { background-color: #f8f9fa; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>详细图片访问测试</h1>
+    
+    <div class="test-section">
+        <h2>测试说明</h2>
+        <p>本页面用于详细测试public/img/stories/目录下的图片访问情况</p>
+        <p>请按Ctrl+Shift+R强制刷新页面，清除浏览器缓存后查看测试结果</p>
+    </div>
+    
+    <!-- 测试单个图片的绝对路径 -->
+    <div class="test-section">
+        <h2>1. 测试单个图片的绝对路径</h2>
+        <p class="test-url">URL: http://localhost:5173/img/stories/家族成立.jpg</p>
+        <img class="test-image" id="testImage" src="/img/stories/家族成立.jpg" alt="家族成立">
+        <div id="imageStatus" class="debug-info">正在检查...</div>
+    </div>
+    
+    <!-- 测试所有图片 -->
+    <div class="test-section">
+        <h2>2. 测试所有图片</h2>
+        <div id="allImagesTest"></div>
+    </div>
+    
+    <!-- 测试不同路径格式 -->
+    <div class="test-section">
+        <h2>3. 测试不同路径格式</h2>
+        <div class="debug-info">
+            <p>当前页面URL: <span id="currentUrl"></span></p>
+            <p>base href: <span id="baseHref"></span></p>
+        </div>
+    </div>
+    
+    <script>
+        // 显示当前页面URL和base href
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('baseHref').textContent = document.baseURI;
+        
+        // 测试单个图片
+        const testImage = document.getElementById('testImage');
+        const imageStatus = document.getElementById('imageStatus');
+        
+        testImage.onload = () => {
+            imageStatus.textContent = '✅ 图片加载成功！';
+            imageStatus.className = 'success debug-info';
+        };
+        
+        testImage.onerror = (error) => {
+            imageStatus.innerHTML = `❌ 图片加载失败！<br>错误信息: ${error.message}`;
+            imageStatus.className = 'error debug-info';
+        };
+        
+        // 测试所有图片
+        const allImagesTest = document.getElementById('allImagesTest');
+        const imageFiles = [
+            '家族成立.jpg', '重要婚礼.jpg', '长子出生.jpg', '乔迁新居.jpg', '家族聚会.jpg',
+            '事业成就.jpg', '学业有成.jpg', '重要纪念日.jpg', '家族旅行.jpg', '未来规划.jpg'
+        ];
+        
+        imageFiles.forEach((fileName, index) => {
+            const testContainer = document.createElement('div');
+            testContainer.className = 'test-section';
+            
+            const imageUrl = `/img/stories/${fileName}`;
+            const fullUrl = `http://localhost:5173${imageUrl}`;
+            
+            testContainer.innerHTML = `
+                <p><strong>图片 ${index + 1}: ${fileName}</strong></p>
+                <p class="test-url">URL: ${fullUrl}</p>
+                <img class="test-image" src="${imageUrl}" alt="${fileName}">
+                <div class="debug-info">正在检查...</div>
+            `;
+            
+            allImagesTest.appendChild(testContainer);
+            
+            // 监听图片加载状态
+            const imgElement = testContainer.querySelector('img');
+            const statusElement = testContainer.querySelector('.debug-info');
+            
+            imgElement.onload = () => {
+                statusElement.textContent = '✅ 图片加载成功！';
+                statusElement.className = 'success debug-info';
+                testContainer.classList.add('success');
+            };
+            
+            imgElement.onerror = (error) => {
+                statusElement.innerHTML = `❌ 图片加载失败！<br>错误信息: ${error.message}`;
+                statusElement.className = 'error debug-info';
+                testContainer.classList.add('error');
+            };
+        });
+        
+        // 尝试使用fetch API测试图片
+        console.log('开始使用fetch API测试图片...');
+        fetch('/img/stories/家族成立.jpg')
+            .then(response => {
+                console.log('fetch响应状态:', response.status);
+                console.log('fetch响应头:', response.headers);
+                if (response.ok) {
+                    console.log('✅ fetch API测试成功！');
+                    return response.blob();
+                } else {
+                    console.log('❌ fetch API测试失败，状态码:', response.status);
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            })
+            .then(blob => {
+                console.log('✅ 获取到图片blob，大小:', blob.size, 'bytes');
+                console.log('图片类型:', blob.type);
+            })
+            .catch(error => {
+                console.log('❌ fetch API测试失败:', error.message);
+            });
+    </script>
+</body>
+</html>
